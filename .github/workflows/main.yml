@@ -1,12 +1,55 @@
 name: Build sing-box
 
-on: 
+on:
   push:
   pull_request:
 
 jobs:
 
   build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - name: Checkout sing-box
+      uses: actions/checkout@v2
+      with:
+        repository: sagernet/sing-box
+        fetch-depth: 0
+        
+    - name: Set up Go  
+      uses: actions/setup-go@v3
+      with:
+        go-version: 1.19
+
+    - name: Install dependencies
+      run: |
+        sudo apt update
+        sudo apt install -y gcc g++ make
+    
+    - name: Compile
+      env:
+        CGO_ENABLED: 1
+        TAGS: "with_gvisor,with_quic,with_dhcp,with_wireguard,with_shadowsocksr,with_ech,with_utls,with_reality_server,with_acme,with_clash_api,with_v2ray_api"
+      run: |
+        go build -v -tags "$TAGS" -o sing-box ./cmd/sing-box
+
+    - name: Rename binary 
+      run: |
+        mv ./sing-box ./sing-box-binary
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: sing-box-binary
+        path: ./sing-box-binary
+
+  build_full_hardware_arch:
+
+    strategy:
+      matrix:
+        architecture: [windows-amd64, windows-386, linux-amd64, linux-386, linux-arm64, linux-armv5, linux-armv6, linux-armv7, darwin-amd64, darwin-arm64]
 
     runs-on: ubuntu-latest
 
@@ -28,19 +71,15 @@ jobs:
         sudo apt update
         sudo apt install -y gcc g++ make
     
-    - name: Compile
+    - name: Compile for Full Hardware Architecture
       env:
         CGO_ENABLED: 1
         TAGS: "with_gvisor,with_quic,with_dhcp,with_wireguard,with_shadowsocksr,with_ech,with_utls,with_reality_server,with_acme,with_clash_api,with_v2ray_api"
       run: |
-        go install -v -tags "$TAGS" ./cmd/sing-box
+        go build -v -tags "$TAGS" -o sing-box-${{ matrix.architecture }} ./cmd/sing-box
 
-    - name: Rename binary 
-      run: |
-        mv ~/go/bin/sing-box ~/sing-box
-
-    - name: Upload artifact
-      uses: actions/upload-artifact@v3
+    - name: Upload Full Hardware Architecture Artifact
+      uses: actions/upload-artifact@v2
       with:
-        name: sing-box
-        path: ~/sing-box
+        name: sing-box-${{ matrix.architecture }}
+        path: ./sing-box-${{ matrix.architecture }}
