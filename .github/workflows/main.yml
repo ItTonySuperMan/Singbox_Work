@@ -14,6 +14,7 @@ jobs:
         with:
           repository: sagernet/sing-box
           fetch-depth: 0
+      - name: Get latest go version
         id: version
         run: |
           echo go_version=$(curl -s https://raw.githubusercontent.com/actions/go-versions/main/versions-manifest.json | grep -oE '"version": "[0-9]{1}.[0-9]{1,}(.[0-9]{1,})?"' | head -1 | cut -d':' -f2 | sed 's/ //g; s/"//g') >> $GITHUB_OUTPUT
@@ -188,9 +189,10 @@ jobs:
       CGO_ENABLED: 0
       TAGS: with_gvisor,with_quic,with_dhcp,with_wireguard,with_shadowsocksr,with_ech,with_utls,with_reality_server,with_acme,with_clash_api,with_v2ray_api
     steps:
-      - name: Checkout
-        uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # v4
+      - name: Checkout sing-box
+        uses: actions/checkout@v2
         with:
+          repository: sagernet/sing-box
           fetch-depth: 0
       - name: Get latest go version
         id: version
