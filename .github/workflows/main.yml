@@ -188,8 +188,8 @@ jobs:
       GOAMD64: ${{ matrix.goamd64 }}
       GOARM: ${{ matrix.goarm }}
       GOMIPS: ${{ matrix.gomips }}
-      CGO_ENABLED: 0
-      TAGS: with_gvisor,with_quic,with_dhcp,with_wireguard,with_ech,with_utls,with_reality_server,with_acme,with_clash_api,with_v2ray_api
+      CGO_ENABLED: 1
+      TAGS: with_gvisor,with_quic,with_dhcp,with_wireguard,with_ech,with_utls,with_reality_server,with_acme,with_clash_api,with_v2ray_api,with_embedded_tor,with_lwip
     steps:
       - name: Checkout sing-box
         uses: actions/checkout@v2
