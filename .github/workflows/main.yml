@@ -1,22 +1,29 @@
-name: Build sing-box
+name: Debug build
 
-on: 
+on:
   push:
+    branches:
+      - stable-next
+      - main-next
+      - dev-next
+    paths-ignore:
+      - '**.md'
+      - '.github/**'
+      - '!.github/workflows/debug.yml'
   pull_request:
+    branches:
+      - stable-next
+      - main-next
+      - dev-next
 
 jobs:
   build:
     name: Debug build
     runs-on: ubuntu-latest
     steps:
-      - name: Install CGO deps 
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y gcc libc6-dev
-      - name: Checkout sing-box
-        uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # v4
         with:
-          repository: sagernet/sing-box
           fetch-depth: 0
       - name: Get latest go version
         id: version
@@ -43,9 +50,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # v4
         with:
-          repository: sagernet/sing-box
           fetch-depth: 0
       - name: Setup Go
         uses: actions/setup-go@v4
@@ -64,9 +70,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # v4
         with:
-          repository: sagernet/sing-box
           fetch-depth: 0
       - name: Setup Go
         uses: actions/setup-go@v4
@@ -195,10 +200,9 @@ jobs:
       CGO_ENABLED: 1
       TAGS: with_gvisor,with_quic,with_dhcp,with_wireguard,with_ech,with_utls,with_reality_server,with_acme,with_clash_api,with_v2ray_api,with_embedded_tor,with_lwip
     steps:
-      - name: Checkout sing-box
-        uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # v4
         with:
-          repository: sagernet/sing-box
           fetch-depth: 0
       - name: Get latest go version
         id: version
